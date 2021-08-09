@@ -30,3 +30,7 @@ jobs:
       - name: Copy file(s) to bucket
         run: |
           aws s3 sync code/ s3://templabs-code/deploy/
+      - name: Zip files and copy zip to bucket
+        run: |
+          pushd code; zip -o -r ../deploy.zip .; popd
+          aws s3 cp deploy.zip s3://templabs-code/dummydeploy.zip
