@@ -133,7 +133,6 @@ Resources:
         Fn::GetAtt:
         - ResourceFunctionRole
         - Arn
-      Handler: index.handler
       Environment:
         Variables:
           LAMBDA_ARN: !GetAtt ResourceFunction.Arn
