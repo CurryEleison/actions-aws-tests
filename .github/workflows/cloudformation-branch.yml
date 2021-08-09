@@ -1,0 +1,32 @@
+# Demo of checking cloudformation templates
+¤ Borrowed from https://dev.to/andylim0221/aws-cloudformation-and-github-action-2ck0, which got it from somewhere else I think
+
+name: CloudFormation Demo and Experimentation
+
+on:
+  push:
+    paths:
+      - 'cloudformation/**/*'
+      - '.github/workflows/cloudformation.yml'
+
+
+jobs:
+  Cloudformation-checker:
+    defaults:
+      run:
+        working-directory: ./s3deploy
+    name: Check linting and security concerns
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Testing with CFN Lint Command
+        uses: ScottBrenner/cfn-lint-action@v2
+        with:
+          command: cfn-lint -t ./**/*.yml ./**/*.yaml
+
+      - name: Testing with CFN Nag command
+        uses: minchao/cfn-nag-action@master
+        with:
+          args: '--input-path .
