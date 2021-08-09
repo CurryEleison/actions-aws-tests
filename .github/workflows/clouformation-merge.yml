@@ -3,15 +3,15 @@
 name: Cloudformation demo of merge
 
 on:
-  push:
-    branches:
-      - $default-branch
+  pull_request:
+    types: [ closed ]
     paths:
       - 'cloudformation/**/*'
       - '.github/workflows/cloudformation-merge.yml'
 
 jobs:
   cloudformation-merger:
+    if: github.event.pull_request.merged == true
     defaults:
       run:
         working-directory: ./cloudformation
