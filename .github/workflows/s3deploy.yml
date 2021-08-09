@@ -1,0 +1,36 @@
+# Demonstrating a pack & upload to S3. Tries hard to work with assuming roles
+
+name: s3deploy
+
+on:
+  push:
+    paths:
+      - 's3deploy/**/*'
+      - '.github/workflows/s3deploy.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./s3deploy
+    steps:
+      - name: Setup checkout
+        uses: actions/checkout@v2
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+          role-to-assume: ${{ secrets.S3DEPLOY_ROLE_ARN }}
+          # role-external-id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
+          role-duration-seconds: 1200
+          role-session-name: S3DeploySessionName
+      - name: Copy file(s) to bucket
+        run: |
+          aws s3 sync code/ s3://templabs-code/deploy/
+      - name: Zip files and copy zip to bucket
+        run: |
+          pushd code; zip -o -r ../deploy.zip .; popd
+          aws s3 cp deploy.zip s3://templabs-code/dummydeploy.zip
