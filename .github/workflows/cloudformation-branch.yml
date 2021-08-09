@@ -29,4 +29,4 @@ jobs:
       - name: Testing with CFN Nag command
         uses: minchao/cfn-nag-action@master
         with:
-          args: '--input-path .
+          args: '--input-path .'
